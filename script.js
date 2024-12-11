@@ -87,86 +87,81 @@ function getLearnerData(course, ag, submissions) {
   console.log(ag, "======ag=======");
   console.log(submissions, "=====submission========");
   // the ID of the learner for which this data has been collected
+  let tempResult = [];
   if (course.id !== ag.course_id) {
     throw Error("Assignment's Course Id does not match course id");
-  }
-
-  let id,
-    avg,
-    tempResult = [];
-  let learnerIdArr = [];
-  let k = 0;
-  while (k < submissions.length) {
-    learnerIdArr.push(submissions[k].learner_id);
-    k++;
-  }
-  console.log(learnerIdArr, "===learnerIdArr");
-
-  var uniqueArray = learnerIdArr.filter(
-    (value, index, array) => array.indexOf(value) === index
-  );
-  //Unique id of learners
-  console.log(uniqueArray[0] + "===uniqueArray");
-
-  let tempObj = {};
-  let sum = 0,
-    score = 0;
-  let total = 0;
-  let pointsPossible;
-  let assignment;
-  for (let j = 0; j < uniqueArray.length; j++) {
-    for (let i = 0; i < submissions.length; i++) {
-      assignment = ag.assignments.find(
-        (a) => a.id === submissions[i].assignment_id
-      );
-      const dueDate = new Date(assignment.due_at);
-      const submittedDate = new Date(submissions[i].submission.submitted_at);
-      console.log(dueDate + "    " + submittedDate);
-
-      if (
-        uniqueArray[j] === submissions[i].learner_id &&
-        dueDate < new Date()
-      ) {
-        tempObj.id = uniqueArray[j];
-        console.log(assignment.id, " assignment id");
-        try {
-          if (assignment.points_possible === 0) {
-            throw new Error("Divide by zero error");
-          }
-          score = submissions[i].submission.score;
-          pointsPossible = assignment.points_possible;
-          console.log(pointsPossible, "  points possible");
-          if (dueDate < submittedDate) {
-            score = deductTenPercent(score, pointsPossible);
-          }
-          tempObj[assignment.id] = (score / pointsPossible).toFixed(2);
-        } catch (error) {
-          console.error(error);
-        }
-        sum += score;
-
-        // tempObj.sum = sum;
-        console.log(sum, "  sum");
-        console.log(tempObj.id);
-        let pointsTotal = assignment.points_possible;
-
-        total = total + pointsTotal;
-        console.log(total, " points Total  ===");
-        // tempObj.total = total;
-        const avg = sum / total;
-        tempObj.avg = avg;
-      }
+  } else {
+    const learnerIdArr = [];
+    let k = 0;
+    while (k < submissions.length) {
+      learnerIdArr.push(submissions[k].learner_id);
+      k++;
     }
-    sum = 0;
-    total = 0;
-    score = 0;
-    pointsPossible = 0;
-    tempResult.push(tempObj);
-    console.log(tempObj + "  Temp obj");
-    tempObj = {};
-  }
-  tempResult.forEach((x) => console.log(x));
+    console.log(learnerIdArr, "===learnerIdArr");
 
+    var uniqueArray = learnerIdArr.filter(
+      (value, index, array) => array.indexOf(value) === index
+    );
+    //Unique id of learners
+    console.log(uniqueArray[0] + "===uniqueArray");
+
+    let tempObj = {};
+    let sum = 0,
+      score = 0;
+    let total = 0;
+    let pointsPossible;
+    let assignment;
+    for (let j = 0; j < uniqueArray.length; j++) {
+      for (let i = 0; i < submissions.length; i++) {
+        assignment = ag.assignments.find(
+          (a) => a.id === submissions[i].assignment_id
+        );
+        const dueDate = new Date(assignment.due_at);
+        const submittedDate = new Date(submissions[i].submission.submitted_at);
+        console.log(dueDate + "    " + submittedDate);
+
+        const isIdPresent = uniqueArray[j] === submissions[i].learner_id;
+        if (isIdPresent && dueDate < new Date()) {
+          tempObj.id = uniqueArray[j];
+          console.log(assignment.id, " assignment id");
+          try {
+            if (assignment.points_possible === 0) {
+              throw new Error("Divide by zero error");
+            }
+            score = submissions[i].submission.score;
+            pointsPossible = assignment.points_possible;
+            console.log(pointsPossible, "  points possible");
+            if (dueDate < submittedDate) {
+              score = deductTenPercent(score, pointsPossible);
+            }
+            tempObj[assignment.id] = (score / pointsPossible).toFixed(2);
+          } catch (error) {
+            console.error(error);
+          }
+          sum += score;
+
+          // tempObj.sum = sum;
+          console.log(sum, "  sum");
+          console.log(tempObj.id);
+          let pointsTotal = assignment.points_possible;
+
+          total = total + pointsTotal;
+          console.log(total, " points Total  ===");
+          // tempObj.total = total;
+          const avg = sum / total;
+          tempObj.avg = avg;
+        }
+      }
+      sum = 0;
+      total = 0;
+      score = 0;
+      pointsPossible = 0;
+      tempResult.push(tempObj);
+      console.log(tempObj + "  Temp obj");
+      tempObj = {};
+    }
+    tempResult.forEach((x) => console.log(x));
+  }
   const result = [
     {
       id: 125,
