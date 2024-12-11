@@ -99,9 +99,18 @@ function getLearnerData(course, ag, submissions) {
     }
     console.log(learnerIdArr, "===learnerIdArr");
 
-    var uniqueArray = learnerIdArr.filter(
-      (value, index, array) => array.indexOf(value) === index
-    );
+    let uniqueArray = [];
+    for (let i = 0; i < learnerIdArr.length; i++) {
+      if (uniqueArray.includes(learnerIdArr[i])) {
+        continue;
+      } else {
+        uniqueArray.push(learnerIdArr[i]);
+      }
+    }
+
+    // let uniqueArray = learnerIdArr.filter(
+    //   (value, index, array) => array.indexOf(value) === index
+    // );
     //Unique id of learners
     console.log(uniqueArray[0] + "===uniqueArray");
 
