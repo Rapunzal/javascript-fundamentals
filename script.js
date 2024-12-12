@@ -102,6 +102,16 @@ function getAssignment(ag, assignmentId) {
   }
 }
 
+function checkNumber(uniqueArray) {
+  for (let i of uniqueArray) {
+    if (typeof i === "number") {
+      break;
+    } else {
+      throw Error("Number expected but " + typeof i + " found.");
+    }
+  }
+}
+
 function calculateAvgForEachAssignmentId(score, pointsPossible) {
   return (score / pointsPossible).toFixed(2);
 }
@@ -109,9 +119,6 @@ function getLearnerData(course, ag, submissions) {
   checkType(course);
 
   // here, we would process this data to achieve the desired result.
-  console.log(course, "===course==========");
-  console.log(ag, "======ag=======");
-  console.log(submissions, "=====submission========");
   // the ID of the learner for which this data has been collected
   let tempResult = [];
   if (course.id !== ag.course_id) {
@@ -126,7 +133,9 @@ function getLearnerData(course, ag, submissions) {
     console.log(learnerIdArr, "===learnerIdArr");
 
     //Used For loop, Continue and let variable, array
+
     let uniqueArray = getUniqueLearnerId(learnerIdArr);
+    checkNumber(uniqueArray);
     console.log(uniqueArray + "===uniqueArray");
 
     let tempObj = {};
@@ -136,28 +145,33 @@ function getLearnerData(course, ag, submissions) {
     let pointsPossible = 0;
     let assignment = 0;
     for (let j = 0; j < uniqueArray.length; j++) {
+      sum = 0;
+      total = 0;
+      score = 0;
+      pointsPossible = 0;
+      tempObj = {};
       for (let i = 0; i < submissions.length; i++) {
         // assignment = ag.assignments.find(
         //   (a) => a.id === submissions[i].assignment_id
         // );
         let dueDate, submittedDate;
-        const isIdPresent = uniqueArray[j] === submissions[i].learner_id;
+        let learnerSubmissions = submissions[i];
+        const isIdPresent = uniqueArray[j] === learnerSubmissions.learner_id;
         if (isIdPresent) {
-          assignment = getAssignment(ag, submissions[i].assignment_id);
+          assignment = getAssignment(ag, learnerSubmissions.assignment_id);
           dueDate = new Date(assignment.due_at);
-          submittedDate = new Date(submissions[i].submission.submitted_at);
+          submittedDate = new Date(learnerSubmissions.submission.submitted_at);
           //console.log(dueDate + "    " + submittedDate);
         }
         if (isIdPresent && dueDate < new Date()) {
           tempObj.id = uniqueArray[j];
-          console.log(assignment.id, " assignment id");
           try {
             if (assignment.points_possible === 0) {
               throw new Error("Divide by zero error");
             }
-            score = submissions[i].submission.score;
+            score = learnerSubmissions.submission.score;
             pointsPossible = assignment.points_possible;
-            console.log(pointsPossible, "  points possible");
+            // console.log(pointsPossible, "  points possible");
             if (dueDate < submittedDate) {
               score = deductTenPercent(score, pointsPossible);
             }
@@ -169,50 +183,50 @@ function getLearnerData(course, ag, submissions) {
             console.error(error);
           }
           sum += score;
-
-          // tempObj.sum = sum;
-          console.log(sum, "  sum");
-          console.log(tempObj.id);
+          tempObj.sum = sum;
           let pointsTotal = assignment.points_possible;
 
           total = total + pointsTotal;
-          console.log(total, " points Total  ===");
-          // tempObj.total = total;
+          tempObj.total = total;
           const avg = sum / total;
           tempObj.avg = avg;
         }
       }
-      sum = 0;
-      total = 0;
-      score = 0;
-      pointsPossible = 0;
+
       tempResult.push(tempObj);
-      console.log(tempObj + "  Temp obj");
-      tempObj = {};
+      //console.log(tempObj + "  Temp obj");
     }
-    tempResult.forEach((x) => console.log(x));
+    tempResult.forEach((x) => {
+      delete x.sum;
+      delete x.total;
+    });
   }
-  const result = [
-    {
-      id: 125,
-      avg: 0.985, // (47 + 150) / (50 + 150)
-      1: 0.94, // 47 / 50
-      2: 1.0, // 150 / 150
-    },
-    {
-      id: 132,
-      avg: 0.82, // (39 + 125) / (50 + 150)
-      1: 0.78, // 39 / 50
-      2: 0.833, // late: (140 - 15) / 150
-    },
-  ];
+  //   const result = [
+  //     {
+  //       id: 125,
+  //       avg: 0.985, // (47 + 150) / (50 + 150)
+  //       1: 0.94, // 47 / 50
+  //       2: 1.0, // 150 / 150
+  //     },
+  //     {
+  //       id: 132,
+  //       avg: 0.82, // (39 + 125) / (50 + 150)
+  //       1: 0.78, // 39 / 50
+  //       2: 0.833, // late: (140 - 15) / 150
+  //     },
+  //   ];
 
   return tempResult;
 }
 
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
-
-console.log(result);
+try {
+  if (result !== 0) {
+    console.log(result);
+  }
+} catch (error) {
+  console.log(error);
+}
 
 function checkType(course) {
   for (let i in course) {
