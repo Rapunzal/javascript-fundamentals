@@ -81,6 +81,30 @@ function deductTenPercent(score, points) {
   return score;
 }
 
+function getUniqueLearnerId(learnerIdArr) {
+  const uniqueArray = [];
+  for (let i = 0; i < learnerIdArr.length; i++) {
+    if (uniqueArray.includes(learnerIdArr[i])) {
+      continue;
+    }
+    uniqueArray.push(learnerIdArr[i]);
+  }
+  return uniqueArray;
+}
+
+function getAssignment(ag, assignmentId) {
+  for (let i = 0; i < ag.assignments.length; i++) {
+    if (ag.assignments[i].id == assignmentId) {
+      return ag.assignments[i];
+    } else {
+      continue;
+    }
+  }
+}
+
+function calculateAvgForEachAssignmentId(score, pointsPossible) {
+  return (score / pointsPossible).toFixed(2);
+}
 function getLearnerData(course, ag, submissions) {
   checkType(course);
 
@@ -102,14 +126,7 @@ function getLearnerData(course, ag, submissions) {
     console.log(learnerIdArr, "===learnerIdArr");
 
     //Used For loop, Continue and let variable, array
-    let uniqueArray = [];
-    for (let i = 0; i < learnerIdArr.length; i++) {
-      if (uniqueArray.includes(learnerIdArr[i])) {
-        continue;
-      }
-      uniqueArray.push(learnerIdArr[i]);
-    }
-
+    let uniqueArray = getUniqueLearnerId(learnerIdArr);
     console.log(uniqueArray + "===uniqueArray");
 
     let tempObj = {};
@@ -120,14 +137,17 @@ function getLearnerData(course, ag, submissions) {
     let assignment = 0;
     for (let j = 0; j < uniqueArray.length; j++) {
       for (let i = 0; i < submissions.length; i++) {
-        assignment = ag.assignments.find(
-          (a) => a.id === submissions[i].assignment_id
-        );
-        const dueDate = new Date(assignment.due_at);
-        const submittedDate = new Date(submissions[i].submission.submitted_at);
-        console.log(dueDate + "    " + submittedDate);
-
+        // assignment = ag.assignments.find(
+        //   (a) => a.id === submissions[i].assignment_id
+        // );
+        let dueDate, submittedDate;
         const isIdPresent = uniqueArray[j] === submissions[i].learner_id;
+        if (isIdPresent) {
+          assignment = getAssignment(ag, submissions[i].assignment_id);
+          dueDate = new Date(assignment.due_at);
+          submittedDate = new Date(submissions[i].submission.submitted_at);
+          //console.log(dueDate + "    " + submittedDate);
+        }
         if (isIdPresent && dueDate < new Date()) {
           tempObj.id = uniqueArray[j];
           console.log(assignment.id, " assignment id");
@@ -141,7 +161,12 @@ function getLearnerData(course, ag, submissions) {
             if (dueDate < submittedDate) {
               score = deductTenPercent(score, pointsPossible);
             }
-            tempObj[assignment.id] = (score / pointsPossible).toFixed(2);
+            tempObj[assignment.id] = calculateAvgForEachAssignmentId(
+              score,
+              pointsPossible
+            );
+
+            //   tempObj[assignment.id] = (score / pointsPossible).toFixed(2);
           } catch (error) {
             console.error(error);
           }
