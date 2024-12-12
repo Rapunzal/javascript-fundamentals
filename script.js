@@ -165,8 +165,6 @@ function getLearnerData(course, ag, submissions) {
               score,
               pointsPossible
             );
-
-            //   tempObj[assignment.id] = (score / pointsPossible).toFixed(2);
           } catch (error) {
             console.error(error);
           }
