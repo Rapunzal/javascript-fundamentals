@@ -9,6 +9,11 @@
 - Utilize loops and iteration to navigate through data collections.
 - Implement error handling to manage potential code failures gracefully.
 
+## Technology Used
+
+- JAVASCRIPT
+- HTML
+
 ## What the project does
 
 The project consist of a script getLearnerData that gathers data, processes it, and then outputs a consistent result as specified.It accepts input as courseInfo, AssignmentGroup and LearnerSubmission.The output of the script is Learners profile in an assignment within a course.
@@ -21,8 +26,10 @@ The project consist of a script getLearnerData that gathers data, processes it, 
 
 ## Why the project is useful
 
-- The getLearnerData project helps in keeping track of the performance of Learners by calculating the weighted average and individual performance in each assignment. It aslo
-  considers the due date and submission date while calculating the result.
+The getLearnerData project helps in keeping track of the
+performance of Learners by calculating the weighted average
+and individual performance of learners in each assignment. It aslo
+considers the due date and submission date while calculating the result.
 
 ## How users can get started with the project
 
