@@ -82,6 +82,8 @@ function deductTenPercent(score, points) {
 }
 
 function getLearnerData(course, ag, submissions) {
+  checkType(course);
+
   // here, we would process this data to achieve the desired result.
   console.log(course, "===course==========");
   console.log(ag, "======ag=======");
@@ -99,27 +101,23 @@ function getLearnerData(course, ag, submissions) {
     }
     console.log(learnerIdArr, "===learnerIdArr");
 
+    //Used For loop, Continue and let variable, array
     let uniqueArray = [];
     for (let i = 0; i < learnerIdArr.length; i++) {
       if (uniqueArray.includes(learnerIdArr[i])) {
         continue;
-      } else {
-        uniqueArray.push(learnerIdArr[i]);
       }
+      uniqueArray.push(learnerIdArr[i]);
     }
 
-    // let uniqueArray = learnerIdArr.filter(
-    //   (value, index, array) => array.indexOf(value) === index
-    // );
-    //Unique id of learners
-    console.log(uniqueArray[0] + "===uniqueArray");
+    console.log(uniqueArray + "===uniqueArray");
 
     let tempObj = {};
-    let sum = 0,
-      score = 0;
+    let sum = 0;
+    let score = 0;
     let total = 0;
-    let pointsPossible;
-    let assignment;
+    let pointsPossible = 0;
+    let assignment = 0;
     for (let j = 0; j < uniqueArray.length; j++) {
       for (let i = 0; i < submissions.length; i++) {
         assignment = ag.assignments.find(
@@ -192,3 +190,24 @@ function getLearnerData(course, ag, submissions) {
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
 console.log(result);
+
+function checkType(course) {
+  for (let i in course) {
+    console.log(course[i]);
+    const variable = course[i];
+    switch (typeof variable) {
+      case "string":
+        console.log("Its a string");
+        break;
+      case "number":
+        console.log("Its a number");
+        break;
+      case "boolean":
+        console.log("Its a boolean");
+        break;
+      default:
+        console.log("Unknown type.");
+        throw Error("Invalid Data type");
+    }
+  }
+}
