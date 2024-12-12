@@ -39,6 +39,9 @@ considers the due date and submission date while calculating the result.
 - Then user should execute the function.
 - This function returns the result as specified in preceeding section.
 
+* const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions) 
+  console.log(result);
+
 ## Output
 
 ![alt text](image.png)
