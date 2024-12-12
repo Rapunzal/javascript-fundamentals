@@ -122,7 +122,7 @@ function getLearnerData(course, ag, submissions) {
   // the ID of the learner for which this data has been collected
   let tempResult = [];
   if (course.id !== ag.course_id) {
-    throw Error("Assignment's Course Id does not match course id");
+    throw Error("Assignment's Course Id does not match course id"); //change here
   } else {
     const learnerIdArr = [];
     let k = 0;
