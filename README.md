@@ -51,12 +51,17 @@ considers the due date and submission date while calculating the result.
 This is the input that needs to be provided to the program.
 
 // The provided course information.
+
+```
 const CourseInfo = {
 id: 451,
 name: "Introduction to JavaScript",
 };
+```
 
 // The provided assignment group.
+
+```
 const AssignmentGroup = {
 id: 12345,
 name: "Fundamentals of JavaScript",
@@ -83,8 +88,11 @@ points_possible: 500,
 },
 ],
 };
+```
 
 // The provided learner submission data.
+
+```
 const LearnerSubmissions = [
 {
 learner_id: 125,
@@ -127,3 +135,4 @@ score: 140,
 },
 },
 ];
+```
