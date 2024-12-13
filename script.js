@@ -76,10 +76,14 @@ const LearnerSubmissions = [
   },
 ];
 
+//Function to deduct for late submission
+
 function deductTenPercent(score, points) {
   score = score - points / 10;
   return score;
 }
+
+//getting unique array of learners
 
 function getUniqueLearnerId(learnerIdArr) {
   const uniqueArray = [];
@@ -102,41 +106,49 @@ function getAssignment(ag, assignmentId) {
   }
 }
 
+//function to check for data type
+
 function checkNumber(uniqueArray) {
   for (let i of uniqueArray) {
     if (typeof i === "number") {
-      break;
+      continue;
     } else {
       throw Error("Number expected but " + typeof i + " found.");
     }
   }
 }
 
+//function for calculting average for each assignment
+
 function calculateAvgForEachAssignmentId(score, pointsPossible) {
   return (score / pointsPossible).toFixed(2);
 }
+//Main getLearnerData function
+
 function getLearnerData(course, ag, submissions) {
   checkType(course);
 
   // here, we would process this data to achieve the desired result.
-  // the ID of the learner for which this data has been collected
+
   let tempResult = [];
   if (course.id !== ag.course_id) {
     throw Error("Assignment's Course Id does not match course id"); //change here
   } else {
     const learnerIdArr = [];
+
+    //Used While Loop
     let k = 0;
     while (k < submissions.length) {
       learnerIdArr.push(submissions[k].learner_id);
       k++;
     }
-    console.log(learnerIdArr, "===learnerIdArr");
+    // console.log(learnerIdArr, "===learnerIdArr");
 
     //Used For loop, Continue and let variable, array
 
     let uniqueArray = getUniqueLearnerId(learnerIdArr);
     checkNumber(uniqueArray);
-    console.log(uniqueArray + "===uniqueArray");
+    // console.log(uniqueArray + "===uniqueArray");
 
     let tempObj = {};
     let sum = 0;
@@ -151,9 +163,6 @@ function getLearnerData(course, ag, submissions) {
       pointsPossible = 0;
       tempObj = {};
       for (let i = 0; i < submissions.length; i++) {
-        // assignment = ag.assignments.find(
-        //   (a) => a.id === submissions[i].assignment_id
-        // );
         let dueDate, submittedDate;
         let learnerSubmissions = submissions[i];
         const isIdPresent = uniqueArray[j] === learnerSubmissions.learner_id;
@@ -194,27 +203,12 @@ function getLearnerData(course, ag, submissions) {
       }
 
       tempResult.push(tempObj);
-      //console.log(tempObj + "  Temp obj");
     }
     tempResult.forEach((x) => {
       delete x.sum;
       delete x.total;
     });
   }
-  //   const result = [
-  //     {
-  //       id: 125,
-  //       avg: 0.985, // (47 + 150) / (50 + 150)
-  //       1: 0.94, // 47 / 50
-  //       2: 1.0, // 150 / 150
-  //     },
-  //     {
-  //       id: 132,
-  //       avg: 0.82, // (39 + 125) / (50 + 150)
-  //       1: 0.78, // 39 / 50
-  //       2: 0.833, // late: (140 - 15) / 150
-  //     },
-  //   ];
 
   return tempResult;
 }
@@ -228,7 +222,7 @@ try {
   console.log(error);
 }
 
-function checkType(course) {
+function checkType(course, type) {
   for (let i in course) {
     console.log(course[i]);
     const variable = course[i];
